@@ -1,5 +1,7 @@
 Getting started (requires the Wikipedia example to be running):
 
+See also https://github.com/daggerrz/druid-scala-client/blob/master/src/test/scala/com/tapad/druid/client/WikipediaExample.scala
+
 ```
     import scala.concurrent.ExecutionContext
     import org.joda.time.{DateTime, Interval}
