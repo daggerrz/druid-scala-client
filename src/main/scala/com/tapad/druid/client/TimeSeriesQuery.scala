@@ -6,19 +6,7 @@ import org.json4s.JsonDSL._
 import org.json4s.DefaultFormats._
 import org.joda.time.format.ISODateTimeFormat
 
-
-case class Granularity(name: String)
-object Granularity {
-  val All       = Granularity("all")
-  val Second    = Granularity("second")
-  val Minute    = Granularity("minute")
-  val FifteenMinute = Granularity("fifteen_minute")
-  val ThirtyMinute = Granularity("thirty_minute")
-  val Day       = Granularity("day")
-  val Hour      = Granularity("hour")
-}
-
-case class TimeSeries(source: String,
+case class TimeSeriesQuery(source: String,
                       interval: Interval,
                       granularity: Granularity,
                       aggregate: Seq[Aggregation],
