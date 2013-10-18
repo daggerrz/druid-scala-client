@@ -1,10 +1,8 @@
 package com.tapad.druid.client
 
-import org.joda.time.{DateTime, Interval}
+import org.joda.time.Interval
 import org.json4s.JsonAST._
 import org.json4s.JsonDSL._
-import org.json4s.DefaultFormats._
-import org.joda.time.format.ISODateTimeFormat
 
 case class GroupByQuery(source: String,
                         interval: Interval,
@@ -30,14 +28,14 @@ case class GroupByQuery(source: String,
   }
 }
 
-case class GroupByResponse(data: Seq[Map[String, Any]])
+case class GroupByResponse(data: Seq[ResultRow])
 object GroupByResponse {
   implicit val formats = org.json4s.DefaultFormats
   def parse(js: JValue) : GroupByResponse = {
     js match {
       case JArray(results) =>
         val data = results.map { r =>
-          (r \ "event").asInstanceOf[JObject].values
+          ResultRow((r \ "event").asInstanceOf[JObject].values)
         }
         GroupByResponse(data)
       case err @ _ =>

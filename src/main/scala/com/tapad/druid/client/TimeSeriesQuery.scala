@@ -25,7 +25,7 @@ case class TimeSeriesQuery(source: String,
   }
 }
 
-case class TimeSeriesResponse(data: Seq[(DateTime, Map[String, Any])])
+case class TimeSeriesResponse(data: Seq[(DateTime, ResultRow)])
 object TimeSeriesResponse {
   implicit val formats = org.json4s.DefaultFormats
   def parse(js: JValue) : TimeSeriesResponse = {
@@ -34,7 +34,7 @@ object TimeSeriesResponse {
         val data = results.map { r =>
           val time = Time.parse((r \ "timestamp").extract[String])
           val values = (r \ "result").asInstanceOf[JObject].values
-          time -> values
+          time -> ResultRow(values)
         }
         TimeSeriesResponse(data)
       case err @ _ =>
