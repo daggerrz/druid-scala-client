@@ -10,7 +10,7 @@ case class GroupByQuery(source: String,
                         dimensions: Seq[String],
                         aggregate: Seq[Aggregation],
                         postAggregate: Seq[PostAggregation] = Nil,
-                        filter : Filter = Filter.All,
+                        filter : QueryFilter = QueryFilter.All,
                         orderBy: Seq[ColumnOrder] = Nil,
                         limit: Option[Int] = None) {
   def toJson : JValue = {
@@ -28,14 +28,14 @@ case class GroupByQuery(source: String,
   }
 }
 
-case class GroupByResponse(data: Seq[ResultRow])
+case class GroupByResponse(data: Seq[Map[String, Any]])
 object GroupByResponse {
   implicit val formats = org.json4s.DefaultFormats
   def parse(js: JValue) : GroupByResponse = {
     js match {
       case JArray(results) =>
         val data = results.map { r =>
-          ResultRow((r \ "event").asInstanceOf[JObject].values)
+          (r \ "event").asInstanceOf[JObject].values
         }
         GroupByResponse(data)
       case err @ _ =>

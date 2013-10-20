@@ -1,7 +1,7 @@
 package com.tapad.druid.client
 
 object DSL {
-  import Filter._
+  import QueryFilter._
   import PostAggregation._
   case class FilterOps(dimension: String) {
     def ===(value: String) = where(dimension, value)

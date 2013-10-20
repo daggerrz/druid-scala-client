@@ -5,37 +5,37 @@ import org.joda.time.{DateTime, Interval}
 import scala.util.{Failure, Success}
 
 object WikipediaExample {
-  implicit val executionContext = ExecutionContext.Implicits.global
 
   def main(args: Array[String]) {
-    val client = DruidClient("http://localhost:8083")
+    implicit val executionContext = ExecutionContext.Implicits.global
+    val client = DruidClient("http://druid01.prd.nj1.tapad.com:8083")
 
-    import DSL._
+    import com.tapad.druid.client.DSL._
     val query = GroupByQuery(
-      source = "wikipedia",
-      interval = new Interval(new DateTime().minusDays(1), new DateTime()),
-      dimensions = Seq("page"),
+      source = "tap",
+      interval = new Interval(new DateTime().minusMonths(12), new DateTime()),
+      dimensions = Seq("user_agent"),
       granularity = Granularity.All,
       aggregate = Seq(
-        sum("count") as "edits",
-        sum("added") as "chars_added"
+        sum("count") as "user_agent_count"
       ),
       postAggregate = Seq(
-        "chars_added" / "edits" as "chars_per_edit"
+//        "chars_added" / "edits" as "chars_per_edit"
       ),
-      filter = "namespace" === "article" and "country" === "United States",
-      orderBy = Seq(
-        "chars_added" desc
-      ),
+//      filter = "namespace" === "article" and "country" === "United States",
+//      orderBy = Seq(
+//        "chars_added" desc
+//      ),
       limit = Some(100)
     )
 
     client(query).onComplete {
       case Success(resp) =>
         resp.data.foreach { row =>
-          println("Page %s, %s edits, %s chars added, %s per edit".format(
-            row("page"), row("edits"), row("chars_added"), row("chars_per_edit")
-          ))
+          println(row)
+//          println("Page %s, %s edits, %s chars added, %s per edit".format(
+//            row("page"), row("edits"), row("chars_added"), row("chars_per_edit")
+//          ))
         }
         System.exit(0)
       case Failure(ex) =>

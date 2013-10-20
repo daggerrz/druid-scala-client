@@ -13,4 +13,15 @@ case class Aggregation(typeName: String, fieldName: String, outputName: String) 
   def as(outputName: String) = copy(outputName = outputName)
 }
 
+case class MultiFieldAggregation(typeName: String, fieldNames: Seq[String], outputName: String) extends Expression {
+  def toJson = JObject(
+    "type" -> typeName,
+    "name" -> outputName,
+    "fieldNames" -> fieldNames
+  )
+
+  def as(outputName: String) = copy(outputName = outputName)
+}
+
+
 
