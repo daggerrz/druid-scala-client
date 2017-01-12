@@ -1,7 +1,6 @@
 package com.tapad.druid.client
 
 import org.json4s.JsonAST.{JObject, JValue}
-import org.json4s.JsonAST._
 import org.json4s.JsonDSL._
 
 trait PostAggregationFieldSpec extends Expression {
@@ -12,20 +11,25 @@ trait PostAggregationFieldSpec extends Expression {
   def +(rhs: PostAggregationFieldSpec) = arith(rhs, "+")
   def -(rhs: PostAggregationFieldSpec) = arith(rhs, "-")
 }
+
 trait PostAggregation extends PostAggregationFieldSpec {
   def as(outputName: String) : PostAggregation
 }
 
 object PostAggregation {
   def constant(value: Double) = ConstantPostAggregation("constant", value)
+  def fieldAccess(aggregatorName: String, outputName: String) = FieldAccess(aggregatorName, outputName)
+  def fieldAccess(aggregatorName: String) = FieldAccess(aggregatorName, aggregatorName)
+}
 
-  case class FieldAccess(fieldName: String) extends PostAggregationFieldSpec {
-    def toJson: JValue = JObject(
-      "type" -> "fieldAccess",
-      "fieldName" -> fieldName
-    )
-  }
+case class FieldAccess(aggregatorName: String, outputName: String) extends PostAggregation {
+  def toJson: JValue = JObject(
+    "type" -> "fieldAccess",
+    "name" -> outputName,
+    "fieldName" -> aggregatorName
+  )
 
+  def as(outputName: String): PostAggregation = copy(outputName = outputName)
 }
 
 case class ConstantPostAggregation(outputName: String, value: Double) extends PostAggregation  {

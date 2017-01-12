@@ -10,14 +10,14 @@ object DSL {
   implicit def string2FilterOps(s: String) : FilterOps = FilterOps(s)
 
   case class PostAggStringOps(lhs: String) {
-    def /(rhs: String) = ArithmeticPostAggregation("%s_by_%s".format(lhs, rhs), "/", Seq(FieldAccess(lhs), FieldAccess(rhs)))
-    def *(rhs: String) = ArithmeticPostAggregation("%s_times_%s".format(lhs, rhs), "*", Seq(FieldAccess(lhs), FieldAccess(rhs)))
-    def -(rhs: String) = ArithmeticPostAggregation("%s_minus_%s".format(lhs, rhs), "-", Seq(FieldAccess(lhs), FieldAccess(rhs)))
-    def +(rhs: String) = ArithmeticPostAggregation("%s_plus_%s".format(lhs, rhs), "-", Seq(FieldAccess(lhs), FieldAccess(rhs)))
+    def /(rhs: String) = ArithmeticPostAggregation("%s_by_%s".format(lhs, rhs), "/", Seq(fieldAccess(lhs), fieldAccess(rhs)))
+    def *(rhs: String) = ArithmeticPostAggregation("%s_times_%s".format(lhs, rhs), "*", Seq(fieldAccess(lhs), fieldAccess(rhs)))
+    def -(rhs: String) = ArithmeticPostAggregation("%s_minus_%s".format(lhs, rhs), "-", Seq(fieldAccess(lhs), fieldAccess(rhs)))
+    def +(rhs: String) = ArithmeticPostAggregation("%s_plus_%s".format(lhs, rhs), "-", Seq(fieldAccess(lhs), fieldAccess(rhs)))
   }
 
   implicit def string2PostAggOps(s: String) : PostAggStringOps = PostAggStringOps(s)
-  implicit def string2PostAgg(s: String) : PostAggregationFieldSpec = ArithmeticPostAggregation("no_name", "*", Seq(FieldAccess(s), constant(1)))
+  implicit def string2PostAgg(s: String) : PostAggregationFieldSpec = ArithmeticPostAggregation("no_name", "*", Seq(fieldAccess(s), constant(1)))
   implicit def numericToConstant[T](n: T)(implicit num: Numeric[T]) : ConstantPostAggregation = constant(num.toDouble(n))
 
   case class OrderByStringOps(col: String) {

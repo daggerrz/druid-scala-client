@@ -19,7 +19,7 @@ case class TopNQuery(source: String,
     JObject(
       "queryType" -> "topN",
       "dataSource" -> source,
-      "granularity" -> granularity.name,
+      "granularity" -> granularity.toJson,
       "dimension" -> dimension,
       "threshold" -> threshold,
       "metric" -> metric,
@@ -47,7 +47,7 @@ object TopNResponse {
         }
         TopNResponse(data)
       case err @ _ =>
-        throw new IllegalArgumentException("Invalid top N response: " + err)
+        throw new IllegalArgumentException("Invalid top N response:\n" + org.json4s.jackson.prettyJson(err))
     }
   }
 }

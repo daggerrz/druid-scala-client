@@ -37,6 +37,7 @@ case class DruidClient(serverUrl: String)(implicit val executionContext: Executi
 
   def apply(ts: TimeSeriesQuery) : Future[TimeSeriesResponse] = execute(ts.toJson, TimeSeriesResponse.parse)
   def apply(ts: GroupByQuery) : Future[GroupByResponse] = execute(ts.toJson, GroupByResponse.parse)
+  def apply(ts: TopNQuery) : Future[TopNResponse] = execute(ts.toJson, TopNResponse.parse)
 
   def queryTimeSeries(query: String) : Future[TimeSeriesResponse] = {
     Grammar.parser.parseAll(Grammar.parser.timeSeries, query) match {
@@ -58,6 +59,8 @@ case class DruidClient(serverUrl: String)(implicit val executionContext: Executi
       case failure => throw new IllegalArgumentException(failure.toString)
     }
   }
+
+  def close() = client.close()
 
 }
 
