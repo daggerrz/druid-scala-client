@@ -17,7 +17,7 @@ case class GroupByQuery(source: String,
     JObject(
       "queryType" -> "groupBy",
       "dataSource" -> source,
-      "granularity" -> granularity.name,
+      "granularity" -> granularity.toJson,
       "dimensions" -> dimensions,
       "aggregations" -> aggregate.map(_.toJson),
       "postAggregations" -> postAggregate.map(_.toJson),
@@ -39,7 +39,7 @@ object GroupByResponse {
         }
         GroupByResponse(data)
       case err @ _ =>
-        throw new IllegalArgumentException("Invalid time series response: " + err)
+        throw new IllegalArgumentException("Invalid time series response:\n" + org.json4s.jackson.prettyJson(err))
     }
   }
 }
